@@ -2746,10 +2746,10 @@ static void ForceDestructionMissile(gentity_t *ent)
 	int damage = 200;
 	float vel = 2800;
 
-	VectorCopy(ent->client->renderInfo.handLPoint, start);
-	AngleVectors(ent->client->ps.viewangles, dir, NULL, NULL);
-
+	VectorCopy(&muzzle, &start);
 	WP_TraceSetStart(ent, &start, &vec3_origin, &vec3_origin);//make sure our start point isn't on the other side of a wall
+
+	missile = CreateMissile(&start, &forward, vel, 10000, ent, qfalse);//make sure our start point isn't on the other side of a wall
 
 	gentity_t *missile = CreateMissile(&start, dir, vel, 10000, ent, qfalse);
 
