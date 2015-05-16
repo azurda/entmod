@@ -546,7 +546,59 @@ static int JPLua_Player_GiveWeapon( lua_State *L ) {
 	return 0;
 }
 #endif
+#ifdef _GAME
+//Func: Player:Give( char type, int id, int amount )
+//Retn: N/A
+static int JPLua_Player_Give( lua_State *L ) {
+	jplua_player_t *player = JPLua_CheckPlayer( L, 1 );
+	gentity_t *ent = &g_entities[player->clientNum];
+	const char *type = luaL_checkstring(L,2);
+	int id = luaL_checkinteger( L, 3 );
+	int value = lua_tointeger(L, 4);
 
+	if (!Q_stricmp( type, "weapon" )){
+		if (id == -1){
+			ent->client->ps.stats[STAT_WEAPONS] = ((1 << LAST_USEABLE_WEAPON) - 1) & ~1;
+		}
+		if ( id <= WP_NONE ||id >= WP_NUM_WEAPONS ){
+			return 0;
+		}
+
+		ent->client->ps.stats[STAT_WEAPONS] |= (1 << id);
+	}else if (!Q_stricmp( type, "powerup" )){
+		if ( id <= PW_NONE ||id >= PW_NUM_POWERUPS ){
+			return 0;
+		}
+
+		ent->client->ps.powerups[id] = level.time + value;
+	}else if (!Q_stricmp( type, "item" )){
+		if (id == -1){
+			for (int i = 0; i < HI_NUM_HOLDABLE; i++ ){
+				ent->client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << i);
+			}
+		}
+		if ( id <= HI_NONE ||id >= HI_NUM_HOLDABLE ){
+			return 0;
+		}
+
+		ent->client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << id);
+
+	}else if (!Q_stricmp( type, "ammo" )){
+		if (id == -1){
+			for (int i = 0; i < AMMO_MAX; i++ ) {
+				ent->client->ps.ammo[i] = ammoMax[i];
+			}
+		}
+		if ( id <= AMMO_NONE ||id >= AMMO_MAX ){
+			return 0;
+		}
+
+		ent->client->ps.ammo[id] = value;
+	}
+
+	return 0;
+}
+#endif
 #ifdef _GAME
 //Func: Player:IsAdmin()
 //Retn: boolean loggedIn, string adminUser, integer adminPermissions
