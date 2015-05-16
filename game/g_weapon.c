@@ -2782,7 +2782,7 @@ void ForceDestructionShoot(gentity_t *self)
 	 
 	ForceDestructionMissile(self);
 }*/
-public static void WP_FireConcussion( gentity_t *ent ) {//a fast rocket-like projectile
+ void WP_FireConcussion( gentity_t *ent ) {//a fast rocket-like projectile
 	vector3	start;
 	int		damage = CONC_DAMAGE;
 	float	vel = CONC_VELOCITY;
