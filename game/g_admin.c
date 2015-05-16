@@ -2090,13 +2090,79 @@ static void AM_Portal( gentity_t *ent ) {
 
 // shader remapping
 static void AM_Remap( gentity_t *ent ) {
+	char arg1[128] = { '\0' };
+	char arg2[128] = { '\0' };
+
 	if ( !ent ) {
 		trap->Print( "This command is not available for server console use yet\n" );
 		return;
 	}
+	if (trap->Argc() < 2){
+		AM_ConsolePrint(ent, "Sintaxis: \\amremap <de> <a>\n");
+		return;
+	}
+	trap->Argv(1, arg1, sizeof(arg1));
+	trap->Argv(2, arg2, sizeof(arg2));
+	AddRemap(arg1, arg2, level.time);
+	trap->SetConfigstring(CS_SHADERSTATE, BuildShaderStateConfig());
 
-	//RAZTODO: amremap
-	AM_ConsolePrint( ent, "AM_Remap: not yet implemented\n" );
+		
+}
+
+// dar admin
+
+static void AM_Grant(gentity_t *ent)
+{
+	int client;
+	gentity_t *target = NULL;
+	char arg1[64] = { '\0' };
+	char arg2[16] = { '\0' };
+	uint32_t priv = 0;
+	if (!ent) {
+		trap->Print("Este comando no esta disponible desde la consola del servidor");
+		return;
+	}
+
+	if (trap->Argc() < 2)
+	{
+		AM_ConsolePrint(ent, "Sintaxis: \\amgrant <cliente>  <privilegios>(bit-val)\n");
+		return;
+	}
+	trap->Argv(1, arg1, sizeof(arg1));
+	client = (trap->Argc() > 1 ? G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT) : ent - g_entities;
+	trap->Argv(2, arg2, sizeof(arg2));
+	priv = atoi(arg2);
+
+	if (client == -1)
+	{
+		return;
+	}
+	target = &g_entities[client];
+	target->client->pers.tempprivs = priv;
+}
+static void AM_Ungrant(gentity_t *ent){
+	int client;
+	gentity_t *target = NULL;
+	char arg1[64] = { '\0' };
+
+	if (!ent) {
+		trap->Print("Este comando no esta disponible para uso en consola\n");
+		return;
+	}
+
+	if (trap->Argc() < 2){
+		AM_ConsolePrint(ent, "Sintaxis: \\amungrant <cliente>\n");
+		return;
+	}
+
+	trap->Argv(1, arg1, sizeof(arg1));
+	client = (trap->Argc() > 1) ? G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT) : ent - g_entities;
+
+	if (client == -1){
+		return;
+	}
+	target = &g_entities[client];
+	target->client->pers.tempprivs = 0;
 }
 
 // weather manipulation
@@ -2751,12 +2817,14 @@ static const adminCommand_t adminCommands[] = {
 	{ "ambanip", PRIV_BAN, AM_BanIP }, // ban specified IP (IP/range-ban + duration + reason)
 	{ "amclip", PRIV_CLIP, AM_Clip }, // toggle noclip mode
 	{ "amempower", PRIV_EMPOWER, AM_Empower }, // empower the specified client
-	{ "amentlist", PRIV_ENTSPAWN, AM_EntList}, // lists all spawned entities
+	{ "amentlist", PRIV_ENTSPAWN, AM_EntList }, // lists all spawned entities
 	{ "amentremove", PRIV_ENTSPAWN, AM_EntRemove }, // remove an entity
 	{ "amentspawn", PRIV_ENTSPAWN, AM_EntSpawn }, // spawn an entity
 	{ "amforceteam", PRIV_FORCETEAM, AM_ForceTeam }, // force the specified client to a specific team
 	{ "amfreeze", PRIV_SLEEP, AM_Freeze }, // !DEPRECATED! freeze specified client on the spot
 	{ "amghost", PRIV_GHOST, AM_Ghost }, // ghost specified client (or self)
+	{ "amgrant", PRIV_GRANT, AM_Grant },
+	{ "amungrant", PRIV_GRANT, AM_UnGrant },
 	{ "amkick", PRIV_KICK, AM_Kick }, // kick specified client
 	{ "amkillvote", PRIV_KILLVOTE, AM_KillVote }, // kill the current vote
 	{ "amlisttele", PRIV_TELEPORT, AM_ListTelemarks }, // list all marked positions
@@ -2817,6 +2885,10 @@ qboolean AM_HasPrivilege( const gentity_t *ent, uint32_t privilege ) {
 	}
 
 	return qfalse;
+}
+else if
+(ent->client->pers.temppriv s != 0 && (ent->client->pers.tempprivs & privilege)){
+	return qtrue;
 }
 
 // handle admin related commands.
