@@ -2739,7 +2739,126 @@ static void WP_FireConcussionAlt( gentity_t *ent ) {//a rail-gun-like beam
 	if ( japp_unlagged.integer && ent->client && !(ent->r.svFlags & SVF_BOT) )
 		G_UnTimeShiftAllClients( ent );
 }
+static void ForceDestructionMissile(gentity_t *ent)
+{//a fast rocket-like projectile
+	vec3_t start;
+	vec3_t dir;
+	int damage = forceDestructionDamage[ent->client->ps.forcePowerLevel[FP_DESTRUCTION]];
+	float vel = 2800;
 
+	VectorCopy(ent->client->renderInfo.handLPoint, start);
+	AngleVectors(ent->client->ps.viewangles, dir, NULL, NULL);
+
+	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);//make sure our start point isn't on the other side of a wall
+
+	gentity_t *missile = CreateMissile(start, dir, vel, 10000, ent, qfalse);
+
+	missile->classname = "destruct_proj";
+	missile->s.weapon = WP_DESTRUCTION;
+	missile->mass = 10;
+
+	// Make it easier to hit things
+	VectorSet(missile->maxs, ROCKET_SIZE, ROCKET_SIZE, ROCKET_SIZE);
+	VectorScale(missile->maxs, -1, missile->mins);
+
+	missile->damage = damage;
+	missile->dflags = DAMAGE_EXTRA_KNOCKBACK | DAMAGE_HEAVY_WEAP_CLASS;
+
+	missile->methodOfDeath = MOD_FORCE_DESTRUCTION;
+	missile->splashMethodOfDeath = MOD_FORCE_DESTRUCTION;
+
+	missile->clipmask = MASK_SHOT | CONTENTS_LIGHTSABER;
+	missile->splashDamage = floor((float)damage * 0.75f);
+	missile->splashRadius = forceDestructionRadius[ent->client->ps.forcePowerLevel[FP_DESTRUCTION]];
+
+	// we don't want it to ever bounce
+	missile->bounceCount = 0;
+	/*
+	if ( ent && ent->client && ent->client->ps.powerups[PW_GALAK_SHIELD] )
+	{
+	//has shield up
+	missile->damage = 0;
+	missile->splashDamage = 0;
+	}
+	*/
+	// NOTENOTE: the above doesn't actually make any sense
+	int modPowerLevel = -1;
+
+	if (missile->splashDamage
+		|| missile->damage)
+	{
+		modPowerLevel = WP_AbsorbConversion(ent, ent->client->ps.forcePowerLevel[FP_ABSORB], ent, FP_DESTRUCTION, ent->client->ps.forcePowerLevel[FP_DESTRUCTION], 1);
+	}
+
+	if (modPowerLevel != -1)
+	{
+		if (!modPowerLevel)
+		{
+			missile->damage = 0;
+			missile->splashDamage = 0;
+		}
+		else if (modPowerLevel == 1)
+		{
+			missile->damage = floor((float)damage / 4.0f);
+			missile->splashDamage = floor((float)damage / 4.0f);
+		}
+		else if (modPowerLevel == 2)
+		{
+			missile->damage = floor((float)damage / 2.0f);
+			missile->splashDamage = floor((float)damage / 2.0f);
+		}
+		else if (modPowerLevel == 3)
+		{
+			missile->damage = floor((float)damage / 1.0f);
+			missile->splashDamage = floor((float)damage / 1.0f);
+		}
+		else if (modPowerLevel == 4)
+		{
+			missile->damage = floor((float)damage / 0.5f);
+			missile->splashDamage = floor((float)damage / 0.5f);
+		}
+		else if (modPowerLevel == 5)
+		{
+			missile->damage = floor((float)damage / 0.25f);
+			missile->splashDamage = floor((float)damage / 0.25f);
+		}
+		else if (modPowerLevel == 6)
+		{
+			missile->damage = floor((float)damage / 0.12f);
+			missile->splashDamage = floor((float)damage / 0.12f);
+		}
+		else if (modPowerLevel == 7)
+		{
+			missile->damage = floor((float)damage / 0.06f);
+			missile->splashDamage = floor((float)damage / 0.06f);
+		}
+		else if (modPowerLevel == 8)
+		{
+			missile->damage = floor((float)damage / 0.03f);
+			missile->splashDamage = floor((float)damage / 0.03f);
+		}
+		else if (modPowerLevel > 8)
+		{
+			missile->damage = floor((float)damage / 0.01f);
+			missile->splashDamage = floor((float)damage / 0.01f);
+		}
+	}
+}
+
+void ForceDestructionShoot(gentity_t *self)
+{
+	if (self->health <= 0)
+	{
+		return;
+	}
+
+	if (!self->s.number && cg.zoomMode)
+	{//can't force lightning when zoomed in
+		return;
+	}
+
+	ForceDestructionMissile(self);
+}
 static void WP_FireConcussion( gentity_t *ent ) {//a fast rocket-like projectile
 	vector3	start;
 	int		damage = CONC_DAMAGE;
