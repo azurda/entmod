@@ -2889,9 +2889,9 @@ static void AM_UnlockTeam( gentity_t *ent ) {
 	trap->SendServerCommand( -1, va( "print \"%s " S_COLOR_WHITE "team has been unlocked\n\"", TeamName( team ) ) );
 }
 
-static void AM_Destruction(gentity_t *self)
+static void AM_Destruction(gentity_t *ent)
 {
-	ForceDestructionShoot(self);
+	ForceDestructionMissile(ent);
 }
 
 typedef struct adminCommand_s {

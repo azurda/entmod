@@ -2772,7 +2772,7 @@ static void ForceDestructionMissile(gentity_t *ent)
 	// we don't want it to ever bounce
 	missile->bounceCount = 0;
 }
-
+/*
 void ForceDestructionShoot(gentity_t *self)
 {
 	if (self->health <= 0)
@@ -2781,7 +2781,7 @@ void ForceDestructionShoot(gentity_t *self)
 	}
 	 
 	ForceDestructionMissile(self);
-}
+}*/
 static void WP_FireConcussion( gentity_t *ent ) {//a fast rocket-like projectile
 	vector3	start;
 	int		damage = CONC_DAMAGE;
