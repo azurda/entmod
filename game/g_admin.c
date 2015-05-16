@@ -2129,7 +2129,7 @@ static void AM_Grant(gentity_t *ent)
 		return;
 	}
 	trap->Argv(1, arg1, sizeof(arg1));
-	client = (trap->Argc() > 1 ? G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT) : ent - g_entities;
+	client = (trap->Argc() > 1 ? G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT)) : ent - g_entities;
 	trap->Argv(2, arg2, sizeof(arg2));
 	priv = atoi(arg2);
 
@@ -2140,7 +2140,7 @@ static void AM_Grant(gentity_t *ent)
 	target = &g_entities[client];
 	target->client->pers.tempprivs = priv;
 }
-static void AM_Ungrant(gentity_t *ent){
+static void AM_UnGrant(gentity_t *ent){
 	int client;
 	gentity_t *target = NULL;
 	char arg1[64] = { '\0' };
@@ -2883,13 +2883,13 @@ qboolean AM_HasPrivilege( const gentity_t *ent, uint32_t privilege ) {
 	if ( user && (user->privileges & privilege) ) {
 		return qtrue;
 	}
-
+	else if (ent->client->pers.temppriv s != 0 && (ent->client->pers.tempprivs & privilege)){
+		return qtrue;
+	}
 	return qfalse;
 }
-else if
-(ent->client->pers.temppriv s != 0 && (ent->client->pers.tempprivs & privilege)){
-	return qtrue;
-}
+
+
 
 // handle admin related commands.
 // return true if the command exists and/or everything was handled fine.
