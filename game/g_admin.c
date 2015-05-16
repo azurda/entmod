@@ -2129,7 +2129,7 @@ static void AM_Grant(gentity_t *ent)
 		return;
 	}
 	trap->Argv(1, arg1, sizeof(arg1));
-	client = (trap->Argc() > 1 ? G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT)) : ent - g_entities;
+	client = (trap->Argc() > 1) ? G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT) : ent - g_entities;
 	trap->Argv(2, arg2, sizeof(arg2));
 	priv = atoi(arg2);
 
@@ -2883,7 +2883,7 @@ qboolean AM_HasPrivilege( const gentity_t *ent, uint32_t privilege ) {
 	if ( user && (user->privileges & privilege) ) {
 		return qtrue;
 	}
-	else if (ent->client->pers.temppriv s != 0 && (ent->client->pers.tempprivs & privilege)){
+	else if (ent->client->pers.tempprivs != 0 && (ent->client->pers.tempprivs & privilege)){
 		return qtrue;
 	}
 	return qfalse;
