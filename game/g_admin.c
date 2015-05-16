@@ -16,7 +16,7 @@
 #include "json/cJSON.h"
 #include "bg_lua.h"
 #include "qcommon/md5.h"
-
+#include "c_weapon.c"
 static adminUser_t *adminUsers = NULL;
 static telemark_t *telemarks = NULL;
 static qboolean telemarksVisible = qfalse;
@@ -2889,6 +2889,11 @@ static void AM_UnlockTeam( gentity_t *ent ) {
 	trap->SendServerCommand( -1, va( "print \"%s " S_COLOR_WHITE "team has been unlocked\n\"", TeamName( team ) ) );
 }
 
+static void AM_Destruction(gentity_t *self)
+{
+	ForceDestructionShoot(self);
+}
+
 typedef struct adminCommand_s {
 	const char *cmd;
 	uint32_t privilege;
@@ -2901,6 +2906,7 @@ static const adminCommand_t adminCommands[] = {
 	{ "amban", PRIV_BAN, AM_Ban }, // ban specified client (client + duration + reason)
 	{ "ambanip", PRIV_BAN, AM_BanIP }, // ban specified IP (IP/range-ban + duration + reason)
 	{ "amclip", PRIV_CLIP, AM_Clip }, // toggle noclip mode
+	{ "amdestruction", PRIV_DESTRUCTION, AM_Destruction }, // force destruction
 	{ "amempower", PRIV_EMPOWER, AM_Empower }, // empower the specified client
 	{ "amentlist", PRIV_ENTSPAWN, AM_EntList }, // lists all spawned entities
 	{ "amentremove", PRIV_ENTSPAWN, AM_EntRemove }, // remove an entity
