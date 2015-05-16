@@ -2741,9 +2741,9 @@ static void WP_FireConcussionAlt( gentity_t *ent ) {//a rail-gun-like beam
 }
 static void ForceDestructionMissile(gentity_t *ent)
 {//a fast rocket-like projectile
-	vec3_t start;
-	vec3_t dir;
-	int damage = forceDestructionDamage[ent->client->ps.forcePowerLevel[FP_DESTRUCTION]];
+	vector3 start;
+	vector3 dir;
+	int damage = 200;
 	float vel = 2800;
 
 	VectorCopy(ent->client->renderInfo.handLPoint, start);
@@ -2754,7 +2754,6 @@ static void ForceDestructionMissile(gentity_t *ent)
 	gentity_t *missile = CreateMissile(start, dir, vel, 10000, ent, qfalse);
 
 	missile->classname = "destruct_proj";
-	missile->s.weapon = WP_DESTRUCTION;
 	missile->mass = 10;
 
 	// Make it easier to hit things
@@ -4005,6 +4004,9 @@ void FireWeapon( gentity_t *ent, qboolean altFire ) {
 			else {
 				WP_FireConcussion( ent );
 			}
+			break;
+		case WP_Destruction:
+			ForceDestructionShoot(ent);
 			break;
 
 		case WP_BRYAR_OLD:

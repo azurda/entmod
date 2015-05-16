@@ -18,6 +18,7 @@ typedef enum weapon_e {
 	WP_DET_PACK,
 	WP_CONCUSSION,
 	WP_BRYAR_OLD,
+	WP_Destruction,
 	WP_EMPLACED_GUN,
 	WP_TURRET,
 	WP_NUM_WEAPONS
