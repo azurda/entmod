@@ -2129,7 +2129,7 @@ static void AM_Grant(gentity_t *ent)
 		return;
 	}
 	trap->Argv(1, arg1, sizeof(arg1));
-	client = (trap->Argc() > 1) ? G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT) : ent - g_entities;
+	client = G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT);
 	trap->Argv(2, arg2, sizeof(arg2));
 	priv = atoi(arg2);
 
@@ -2156,7 +2156,7 @@ static void AM_UnGrant(gentity_t *ent){
 	}
 
 	trap->Argv(1, arg1, sizeof(arg1));
-	client = (trap->Argc() > 1) ? G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT) : ent - g_entities;
+	client = G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT);
 
 	if (client == -1){
 		return;
@@ -2164,7 +2164,92 @@ static void AM_UnGrant(gentity_t *ent){
 	target = &g_entities[client];
 	target->client->pers.tempprivs = 0;
 }
+static void AM_Give(gentity_t *ent){
+	int client;
+	gentity_t *target = NULL;
+	char arg1[64] = { '\0' };
+	char arg2[64] = { '\0' };
+	char arg3[64] = { '\0' };
+	char arg4[64] = { '\0' };
+	qboolean shift = 0;
 
+	if (!ent) {
+		trap->Print("This command is not available for server console use yet\n");
+		return;
+	}
+
+	if (trap->Argc() < 3) {
+		AM_ConsolePrint(ent, "Sintaxis: \\amgive ^2<cliente> ^7municion/arma/force ^2<id> <cantidad> \n");
+		return;
+	}
+
+	trap->Argv(1, arg1, sizeof(arg1));
+	if (!Q_stricmp(arg1, "weapon") || !Q_stricmp(arg1, "force") || !Q_stricmp(arg1, "ammo"))
+		shift = qtrue;
+
+	trap->Argv(2 - shift, arg2, sizeof(arg2));
+	trap->Argv(3 - shift, arg3, sizeof(arg3));
+	trap->Argv(4 - shift, arg4, sizeof(arg4));
+
+	if (!shift){
+		client = G_ClientFromString(ent, arg1, FINDCL_SUBSTR | FINDCL_PRINT);
+		if (client == -1) {
+			return;
+		}
+		target = &g_entities[client];
+	}
+	else{
+		target = ent;
+	}
+
+	if (!Q_stricmp(arg2, "weapon")){
+		if (atoi(arg3) == -1){
+			target->client->ps.stats[STAT_WEAPONS] = ((1 << LAST_USEABLE_WEAPON) - 1) & ~1;
+		}
+		if (atoi(arg3) <= WP_NONE || atoi(arg3) >= WP_NUM_WEAPONS){
+			return;
+		}
+
+		target->client->ps.stats[STAT_WEAPONS] |= (1 << atoi(arg3));
+	}
+	else if (!Q_stricmp(arg2, "force")){
+		if (atoi(arg3) == -1){
+			for (int i = 0; i < NUM_FORCE_POWERS; i++) {
+				target->client->ps.fd.forcePowerLevel[i] = FORCE_LEVEL_3;
+				target->client->ps.fd.forcePowersKnown |= (1 << i);
+			}
+			return;
+		}
+		if (atoi(arg3) < FP_FIRST || atoi(arg3) >= NUM_FORCE_POWERS){
+			return;
+		}
+		target->client->ps.fd.forcePowerLevel[atoi(arg3)] = FORCE_LEVEL_3;
+		target->client->ps.fd.forcePowersKnown |= (1 << atoi(arg3));
+
+	}
+	else if (!Q_stricmp(arg2, "ammo")){
+		if (atoi(arg3) == -1){
+			for (int i = 0; i < AMMO_MAX; i++) {
+				if (arg4[0]){
+					target->client->ps.ammo[i] = atoi(arg4);
+				}
+				else{
+					target->client->ps.ammo[i] = 999;
+				}
+			}
+		}
+		if (atoi(arg3) <= AMMO_NONE || atoi(arg3) >= AMMO_MAX){
+			return;
+		}
+		if (arg4[0]){
+			target->client->ps.ammo[atoi(arg3)] = atoi(arg4);
+		}
+		else{
+			target->client->ps.ammo[atoi(arg3)] = 999;
+		}
+
+	}
+}
 // weather manipulation
 static const char *weatherEffects[] = {
 	"acidrain",
@@ -2823,8 +2908,9 @@ static const adminCommand_t adminCommands[] = {
 	{ "amforceteam", PRIV_FORCETEAM, AM_ForceTeam }, // force the specified client to a specific team
 	{ "amfreeze", PRIV_SLEEP, AM_Freeze }, // !DEPRECATED! freeze specified client on the spot
 	{ "amghost", PRIV_GHOST, AM_Ghost }, // ghost specified client (or self)
-	{ "amgrant", PRIV_GRANT, AM_Grant },
-	{ "amungrant", PRIV_GRANT, AM_UnGrant },
+	{ "amgive", PRIV_GIVE, AM_Give }, // give player item / fp / weapon
+	{ "amgrant", PRIV_GRANT, AM_Grant }, // give player admin rights
+	{ "amungrant", PRIV_GRANT, AM_UnGrant }, // remove temp rights
 	{ "amkick", PRIV_KICK, AM_Kick }, // kick specified client
 	{ "amkillvote", PRIV_KILLVOTE, AM_KillVote }, // kill the current vote
 	{ "amlisttele", PRIV_TELEPORT, AM_ListTelemarks }, // list all marked positions
