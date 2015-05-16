@@ -2745,6 +2745,7 @@ static void ForceDestructionMissile(gentity_t *ent)
 	vector3 dir;
 	int damage = 200;
 	float vel = 2800;
+	gentity_t *missile; 
 
 	VectorCopy(&muzzle, &start);
 	WP_TraceSetStart(ent, &start, &vec3_origin, &vec3_origin);//make sure our start point isn't on the other side of a wall
@@ -2846,12 +2847,7 @@ void ForceDestructionShoot(gentity_t *self)
 	{
 		return;
 	}
-
-	if (!self->s.number && cg.zoomMode)
-	{//can't force lightning when zoomed in
-		return;
-	}
-
+	 
 	ForceDestructionMissile(self);
 }
 static void WP_FireConcussion( gentity_t *ent ) {//a fast rocket-like projectile
