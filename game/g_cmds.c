@@ -3101,7 +3101,7 @@ static void Cmd_AMInfo_f( gentity_t *ent ) {
 		// JA++ tweaks
 		if ( japp_saberTweaks.integer ) {
 			const uint32_t tweaks = japp_saberTweaks.integer;
-			Q_PrintBuffer( &pb, "  JA++ tweaks:\n" );
+			Q_PrintBuffer( &pb, "  entmod tweaks:\n" );
 
 			Q_PrintBuffer( &pb, va( "    Interpolation %s" S_COLOR_WHITE "\n",
 				(tweaks & SABERTWEAK_INTERPOLATE) ? S_COLOR_GREEN"enabled" : S_COLOR_RED"disabled" ) );

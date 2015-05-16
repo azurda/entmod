@@ -434,9 +434,9 @@ static void JPLua_LoadPluginDir( qboolean inPK3 ) {
 
 static void JPLua_PostInit( lua_State *L ) {
 #if defined(_GAME)
-	trap->Print( S_COLOR_CYAN"**************** "S_COLOR_YELLOW"JA++ Lua (SV) is initialising "S_COLOR_CYAN"****************\n" );
+	trap->Print( S_COLOR_CYAN"**************** "S_COLOR_YELLOW"entmod Lua (SV) is initialising "S_COLOR_CYAN"****************\n" );
 #elif defined(_CGAME)
-	trap->Print( S_COLOR_CYAN"**************** "S_COLOR_YELLOW"JA++ Lua (CL) is initialising "S_COLOR_CYAN"****************\n" );
+	trap->Print( S_COLOR_CYAN"**************** "S_COLOR_YELLOW"entmod Lua (CL) is initialising "S_COLOR_CYAN"****************\n" );
 #endif
 
 	JPLua_Register_System( L );
@@ -449,9 +449,9 @@ static void JPLua_PostInit( lua_State *L ) {
 	JPLua_LoadPluginDir( qfalse );
 
 #if defined(_GAME)
-	trap->Print( S_COLOR_CYAN"**************** "S_COLOR_GREEN"JA++ Lua (SV) is initialised "S_COLOR_GREEN"****************\n" );
+	trap->Print( S_COLOR_CYAN"**************** "S_COLOR_GREEN"entmod Lua (SV) is initialised "S_COLOR_GREEN"****************\n" );
 #elif defined(_CGAME)
-	trap->Print( S_COLOR_CYAN"**************** "S_COLOR_GREEN"JA++ Lua (CL) is initialised "S_COLOR_GREEN"****************\n" );
+	trap->Print( S_COLOR_CYAN"**************** "S_COLOR_GREEN"entmod Lua (CL) is initialised "S_COLOR_GREEN"****************\n" );
 #endif
 }
 

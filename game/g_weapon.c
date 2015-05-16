@@ -2739,7 +2739,7 @@ static void WP_FireConcussionAlt( gentity_t *ent ) {//a rail-gun-like beam
 	if ( japp_unlagged.integer && ent->client && !(ent->r.svFlags & SVF_BOT) )
 		G_UnTimeShiftAllClients( ent );
 }
-static void ForceDestructionMissile(gentity_t *ent)
+/*static void ForceDestructionMissile(gentity_t *ent)
 {//a fast rocket-like projectile
 	vector3	start;
 	int		damage = CONC_DAMAGE;
@@ -2771,7 +2771,7 @@ static void ForceDestructionMissile(gentity_t *ent)
 
 	// we don't want it to ever bounce
 	missile->bounceCount = 0;
-}
+}*/
 /*
 void ForceDestructionShoot(gentity_t *self)
 {
@@ -3929,10 +3929,7 @@ void FireWeapon( gentity_t *ent, qboolean altFire ) {
 				WP_FireConcussion( ent );
 			}
 			break;
-		case WP_Destruction:
-			ForceDestructionShoot(ent);
-			break;
-
+		
 		case WP_BRYAR_OLD:
 			WP_FireBryarPistol( ent, altFire );
 			break;

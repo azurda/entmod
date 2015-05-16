@@ -25,7 +25,7 @@ typedef struct gentity_s gentity_t;
 #include "g_xcvar.h"
 #undef XCVAR_PROTO
 
-#define	GAMEVERSION						"JA+ Mod v2.6 B1" //"JA++ 0.2 build 2"
+#define	GAMEVERSION						"JA+ Mod v2.8 B1" //"JA++ 0.2 build 2"
 #define DEFAULT_NAME					"Padawan"
 #define BODY_QUEUE_SIZE					(8)
 #define	FRAMETIME						(100) // msec

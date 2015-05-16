@@ -16,7 +16,7 @@
 #include "json/cJSON.h"
 #include "bg_lua.h"
 #include "qcommon/md5.h"
-#include "g_weapon.c"
+
 static adminUser_t *adminUsers = NULL;
 static telemark_t *telemarks = NULL;
 static qboolean telemarksVisible = qfalse;
