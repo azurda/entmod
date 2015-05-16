@@ -2749,9 +2749,9 @@ static void ForceDestructionMissile(gentity_t *ent)
 	VectorCopy(ent->client->renderInfo.handLPoint, start);
 	AngleVectors(ent->client->ps.viewangles, dir, NULL, NULL);
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);//make sure our start point isn't on the other side of a wall
+	WP_TraceSetStart(ent, &start, &vec3_origin, &vec3_origin);//make sure our start point isn't on the other side of a wall
 
-	gentity_t *missile = CreateMissile(start, dir, vel, 10000, ent, qfalse);
+	gentity_t *missile = CreateMissile(&start, dir, vel, 10000, ent, qfalse);
 
 	missile->classname = "destruct_proj";
 	missile->mass = 10;
@@ -2763,12 +2763,12 @@ static void ForceDestructionMissile(gentity_t *ent)
 	missile->damage = damage;
 	missile->dflags = DAMAGE_EXTRA_KNOCKBACK | DAMAGE_HEAVY_WEAP_CLASS;
 
-	missile->methodOfDeath = MOD_FORCE_DESTRUCTION;
-	missile->splashMethodOfDeath = MOD_FORCE_DESTRUCTION;
+	missile->methodOfDeath = MOD_ROCKET;
+	missile->splashMethodOfDeath = MOD_ROCKET_HOMING_SPLASH;
 
 	missile->clipmask = MASK_SHOT | CONTENTS_LIGHTSABER;
 	missile->splashDamage = floor((float)damage * 0.75f);
-	missile->splashRadius = forceDestructionRadius[ent->client->ps.forcePowerLevel[FP_DESTRUCTION]];
+	missile->splashRadius = 10;
 
 	// we don't want it to ever bounce
 	missile->bounceCount = 0;
@@ -2783,11 +2783,7 @@ static void ForceDestructionMissile(gentity_t *ent)
 	// NOTENOTE: the above doesn't actually make any sense
 	int modPowerLevel = -1;
 
-	if (missile->splashDamage
-		|| missile->damage)
-	{
-		modPowerLevel = WP_AbsorbConversion(ent, ent->client->ps.forcePowerLevel[FP_ABSORB], ent, FP_DESTRUCTION, ent->client->ps.forcePowerLevel[FP_DESTRUCTION], 1);
-	}
+	
 
 	if (modPowerLevel != -1)
 	{
