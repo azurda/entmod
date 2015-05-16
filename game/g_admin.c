@@ -2891,7 +2891,7 @@ static void AM_UnlockTeam( gentity_t *ent ) {
 
 static void AM_Destruction(gentity_t *ent)
 {
-	ForceDestructionMissile(ent);
+	WP_FireConcussion(ent)
 }
 
 typedef struct adminCommand_s {
