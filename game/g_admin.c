@@ -2891,6 +2891,8 @@ static void AM_UnlockTeam( gentity_t *ent ) {
 
 static void AM_Destruction(gentity_t *ent)
 {
+	AngleVectors(ent->client->ps.viewangles, wp_forward, wp_vright, wp_up);
+	CalcMuzzlePoint(ent, wp_forward, wp_vright, wp_up, wp_muzzle); 
 	WP_FireConcussion(ent);
 }
 
@@ -2916,7 +2918,6 @@ static const adminCommand_t adminCommands[] = {
 	{ "amghost", PRIV_GHOST, AM_Ghost }, // ghost specified client (or self)
 	{ "amgive", PRIV_GIVE, AM_Give }, // give player item / fp / weapon
 	{ "amgrant", PRIV_GRANT, AM_Grant }, // give player admin rights
-	{ "amungrant", PRIV_GRANT, AM_UnGrant }, // remove temp rights
 	{ "amkick", PRIV_KICK, AM_Kick }, // kick specified client
 	{ "amkillvote", PRIV_KILLVOTE, AM_KillVote }, // kill the current vote
 	{ "amlisttele", PRIV_TELEPORT, AM_ListTelemarks }, // list all marked positions
@@ -2942,6 +2943,7 @@ static const adminCommand_t adminCommands[] = {
 	{ "amstatus", PRIV_STATUS, AM_Status }, // display list of players + clientNum + IP + admin
 	{ "amtele", PRIV_TELEPORT, AM_Teleport }, // teleport (all variations of x to y)
 	{ "amtelemark", PRIV_TELEPORT, AM_Telemark }, // mark current location
+	{ "amungrant", PRIV_GRANT, AM_UnGrant }, // remove temp rights
 	{ "amunlockteam", PRIV_LOCKTEAM, AM_UnlockTeam }, // allow clients to join a team
 	{ "amunsilence", PRIV_SILENCE, AM_Unsilence }, // unsilence specified client
 	{ "amvstr", PRIV_VSTR, AM_Vstr }, // execute a variable string
