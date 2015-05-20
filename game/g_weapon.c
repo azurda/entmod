@@ -90,8 +90,8 @@ static vector3 muzzle;
 #define	CONC_NPC_DAMAGE_EASY		40
 #define	CONC_NPC_DAMAGE_NORMAL		80
 #define	CONC_NPC_DAMAGE_HARD		100
-#define	CONC_SPLASH_DAMAGE			40 //50
-#define	CONC_SPLASH_RADIUS			200 //300
+#define	CONC_SPLASH_DAMAGE			100 //50
+#define	CONC_SPLASH_RADIUS			400 //300
 //alt
 #define CONC_ALT_DAMAGE				25 //100
 #define CONC_ALT_NPC_DAMAGE_EASY	20
