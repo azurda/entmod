@@ -2739,7 +2739,9 @@ static void WP_FireConcussionAlt( gentity_t *ent ) {//a rail-gun-like beam
 	if ( japp_unlagged.integer && ent->client && !(ent->r.svFlags & SVF_BOT) )
 		G_UnTimeShiftAllClients( ent );
 }
-/*static void ForceDestructionMissile(gentity_t *ent)
+/*
+AngleVectors( ent->client->ps.viewangles, wp_forward, wp_vright, wp_up );
+CalcMuzzlePoint ( ent, wp_forward, wp_vright, wp_up, wp_muzzle );static void ForceDestructionMissile(gentity_t *ent)
 {//a fast rocket-like projectile
 	vector3	start;
 	int		damage = CONC_DAMAGE;
