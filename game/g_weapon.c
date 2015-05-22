@@ -6,8 +6,8 @@
 #include "Ghoul2/G2.h"
 #include "qcommon/q_shared.h"
 
-static vector3 forward, vright, up;
-static vector3 muzzle;
+vector3 forward, vright, up;
+vector3 muzzle;
 
 // Bryar Pistol
 #define BRYAR_PISTOL_VEL			1600
