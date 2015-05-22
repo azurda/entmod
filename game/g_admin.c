@@ -2891,8 +2891,8 @@ static void AM_UnlockTeam( gentity_t *ent ) {
 
 static void AM_Destruction(gentity_t *ent)
 {
-	AngleVectors(ent->client->ps.viewangles, &wp_forward, &wp_vright, &wp_up);
-	CalcMuzzlePoint(ent, &wp_forward, &wp_vright, &wp_up, &muzzle); 
+	AngleVectors(&ent->client->ps.viewangles, &forward, &vright, &up);
+	CalcMuzzlePoint(ent, &forward, &vright, &up, &muzzle);
 	WP_FireConcussion(ent);
 }
 
