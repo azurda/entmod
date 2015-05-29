@@ -2891,7 +2891,10 @@ static void AM_UnlockTeam( gentity_t *ent ) {
 
 static void AM_Destruction(gentity_t *ent)
 {
-	FireWeapon(WP_FireConcussion, qfalse);
+	static vector3 forward, vright, up;
+	static vector3 muzzle;
+	AngleVectors(&ent->client->ps.viewangles, &forward, &vright, &up);
+	CalcMuzzlePoint(ent, &forward, &vright, &up, &muzzle);
 	WP_FireConcussion(ent);
 }
 
