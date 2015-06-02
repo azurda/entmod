@@ -3623,7 +3623,11 @@ static qboolean CheckSaberDamage( gentity_t *self, int rSaberNum, int rBladeNum,
 				dmg = 35;
 			//	assert( !"Unhandled damage case!" );
 			}
-
+			if ((japp_saberTweaks.integer & SABERTWEAK_NERFDMG)){
+				if (self->client->ps.saberMove == LS_ROLL_STAB){
+					dmg = G_GetAttackDamage(self, 1, 25, 0.333f);
+				}
+			}
 			attackStr = self->client->ps.fd.saberAnimLevel;
 		}
 	}
